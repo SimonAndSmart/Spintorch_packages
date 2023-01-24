@@ -58,8 +58,7 @@ class MMSolver(nn.Module):
             self.fwd = False
             epoch_result = cat(outputs, dim=1)
             result_list.append(epoch_result)
-        total_result = torch.Tensor(len(result_list), *(result_list[0].shape[1:]))
-        return torch.cat(result_list, out=total_result)
+        return torch.cat(result_list)
 
     def run(self, m, B_ext, Msat, signal):
         """Run the simulation in multiple stages for checkpointing"""
