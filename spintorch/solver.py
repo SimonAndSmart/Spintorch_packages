@@ -42,7 +42,7 @@ class MMSolver(nn.Module):
     def forward(self, list_signal):  ################# Changes here ! (Sinan)
         result_list=[]
         for epoch in range(len(list_signal)):
-            signal=list_signal[list_signal:list_signal+1]
+            signal=list_signal[epoch:epoch+1]
             print("DEBUG:",signal.shape)
             self.m_history = []
             self.fwd = True
