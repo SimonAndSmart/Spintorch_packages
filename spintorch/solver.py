@@ -54,19 +54,28 @@ class MMSolver(nn.Module):
         self.fwd = False
         return cat(outputs, dim=1)
 
-    def run(self, m, B_ext, Msat, signal):   ################# Changes here ! (Sinan)
-        """Run the simulation in multiple stages for checkpointing"""
+#     def run(self, m, B_ext, Msat, signal):   ################# Changes here ! (Sinan)
+#         """Run the simulation in multiple stages for checkpointing"""
         
-        E = int(np.sqrt(signal.size()[0])) # size of each epoch 
+#         E = int(np.sqrt(signal.size()[0])) # size of each epoch 
+#         N = int(np.sqrt(signal.size()[1])) # number of stages 
+#         full_outputs = []
+#         for _ in range(E):
+#           outputs = []
+#           for stage, sig in enumerate(signal.chunk(N, dim=1)):
+#               output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
+#               outputs.append(output)
+#           full_outputs.append(outputs)
+#         return full_outputs
+    
+    def run(self, m, B_ext, Msat, signal):
+        """Run the simulation in multiple stages for checkpointing"""
+        outputs = []
         N = int(np.sqrt(signal.size()[1])) # number of stages 
-        full_outputs = []
-        for _ in range(E):
-          outputs = []
-          for stage, sig in enumerate(signal.chunk(N, dim=1)):
-              output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
-              outputs.append(output)
-          full_outputs.append(outputs)
-        return full_outputs
+        for stage, sig in enumerate(signal.chunk(N, dim=1)):
+            output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
+            outputs.append(output)
+        return outputs
         
     def run_stage(self, m, B_ext, Msat, signal):
         """Run a subset of timesteps (needed for 2nd level checkpointing)"""
