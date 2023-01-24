@@ -66,7 +66,7 @@ class MMSolver(nn.Module):
               output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
               outputs.append(output)
           print("DEBUG:",len(outputs),outputs[0].shape)
-          full_outputs.append(outputs)
+          full_outputs = full_outputs + outputs
         print("DEBUG:",len(full_outputs),len(full_outputs[0]))
         return full_outputs
         
