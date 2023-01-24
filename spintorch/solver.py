@@ -40,6 +40,7 @@ class MMSolver(nn.Module):
         self.fwd = False  # differentiates main fwd pass and checpointing runs
 
     def forward(self, signal):
+        print("DEBUG:",signal.shape,signal)
         self.m_history = []
         self.fwd = True
         if isinstance(self.geom, WaveGeometryMs):
