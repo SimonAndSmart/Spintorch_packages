@@ -38,6 +38,7 @@ class MMSolver(nn.Module):
         self.m_history = []
         self.register_buffer("m0", m0)
         self.fwd = False  # differentiates main fwd pass and checpointing runs
+        print("DEBUG:"
 
     def forward(self, signal):
         self.m_history = []
