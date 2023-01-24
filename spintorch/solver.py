@@ -61,10 +61,10 @@ class MMSolver(nn.Module):
         N = int(np.sqrt(signal.size()[1])) # number of stages 
         full_outputs = []
         for _ in range(E):
-            output = []
+            outputs = []
             for stage, sig in enumerate(signal.chunk(N, dim=1)):
                 output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
-                output.append(output)
+                outputs.append(output)
             print("DEBUG:",E,len(output))
             full_outputs.append(output)
         return full_outputs
