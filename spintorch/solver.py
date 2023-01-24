@@ -39,11 +39,11 @@ class MMSolver(nn.Module):
         self.register_buffer("m0", m0)
         self.fwd = False  # differentiates main fwd pass and checpointing runs
 
-    def forward(self, list_signal):  ################# Changes here ! (Sinan)
+    def forward(self, list_signal):  ################# Changes here ! (Sinan) ###
         result_list=[]
         for epoch in range(len(list_signal)):
             signal=list_signal[epoch:epoch+1]
-            print("DEBUG:",signal.shape)
+            #print("DEBUG:",signal.shape)
             self.m_history = []
             self.fwd = True
             if isinstance(self.geom, WaveGeometryMs):
