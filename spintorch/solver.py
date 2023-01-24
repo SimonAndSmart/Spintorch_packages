@@ -39,38 +39,36 @@ class MMSolver(nn.Module):
         self.register_buffer("m0", m0)
         self.fwd = False  # differentiates main fwd pass and checpointing runs
 
-    def forward(self, signal):
-        print("DEBUG:",signal.shape,signal)
-        self.m_history = []
-        self.fwd = True
-        if isinstance(self.geom, WaveGeometryMs):
-            Msat = self.geom()
-            B_ext = self.geom.B
-        else:
-            B_ext = self.geom()
-            Msat = self.geom.Ms
+    def forward(self, list_signal):  ################# Changes here ! (Sinan)
+        result_list=[]
+        for epoch in range(len(list_signal)):
+            signal=list_signal[list_signal:list_signal+1]
+            print("DEBUG:",signal.shape)
+            self.m_history = []
+            self.fwd = True
+            if isinstance(self.geom, WaveGeometryMs):
+                Msat = self.geom()
+                B_ext = self.geom.B
+            else:
+                B_ext = self.geom()
+                Msat = self.geom.Ms
 
-        self.relax(B_ext, Msat) # relax magnetization and store in m0 (no gradients)
-        outputs = self.run(self.m0, B_ext, Msat, signal) # run the simulation
-        self.fwd = False
-        return cat(outputs, dim=1)
+            self.relax(B_ext, Msat) # relax magnetization and store in m0 (no gradients)
+            outputs = self.run(self.m0, B_ext, Msat, signal) # run the simulation
+            self.fwd = False
+            epoch_result = cat(outputs, dim=1)
+            result_list.append(epoch_result)
+        total_result = torch.Tensor(len(result_list), *(result_list[0].shape[1:]))
+        return torch.cat(result_list, out=total_result)
 
-    def run(self, m, B_ext, Msat, signal):   ################# Changes here ! (Sinan)
+    def run(self, m, B_ext, Msat, signal):
         """Run the simulation in multiple stages for checkpointing"""
-        
-        E = int(np.sqrt(signal.size()[0])) # size of each epoch 
+        outputs = []
         N = int(np.sqrt(signal.size()[1])) # number of stages 
-        print("DEBUG:",E,N)
-        full_outputs = []
-        for _ in range(E):
-          outputs = []
-          for stage, sig in enumerate(signal.chunk(N, dim=1)):
-              output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
-              outputs.append(output)
-          print("DEBUG:",len(outputs),outputs[0].shape)
-          full_outputs = full_outputs + outputs
-        print("DEBUG:",len(full_outputs),len(full_outputs[0]))
-        return full_outputs
+        for stage, sig in enumerate(signal.chunk(N, dim=1)):
+            output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
+            outputs.append(output)
+        return outputs
         
     def run_stage(self, m, B_ext, Msat, signal):
         """Run a subset of timesteps (needed for 2nd level checkpointing)"""
