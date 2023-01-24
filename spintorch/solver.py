@@ -59,6 +59,7 @@ class MMSolver(nn.Module):
         
         E = int(np.sqrt(signal.size()[0])) # size of each epoch 
         N = int(np.sqrt(signal.size()[1])) # number of stages 
+        print("DEBUG:",E,N)
         full_outputs = []
         for _ in range(E):
           outputs = []
