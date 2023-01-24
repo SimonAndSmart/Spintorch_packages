@@ -59,15 +59,15 @@ class MMSolver(nn.Module):
         
         E = int(np.sqrt(signal.size()[0])) # size of each epoch 
         N = int(np.sqrt(signal.size()[1])) # number of stages 
-        outputs = []
-        for epoch in range(E):
-            single_output = []
+        full_outputs = []
+        for _ in range(E):
+            output = []
             for stage, sig in enumerate(signal.chunk(N, dim=1)):
-                single_output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
-                single_output.append(single_output)
-            print("DEBUG:",E,len(single_output))
-            outputs.append(single_output)
-        return outputs
+                output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
+                output.append(output)
+            print("DEBUG:",E,len(output))
+            full_outputs.append(output)
+        return full_outputs
         
     def run_stage(self, m, B_ext, Msat, signal):
         """Run a subset of timesteps (needed for 2nd level checkpointing)"""
