@@ -65,6 +65,7 @@ class MMSolver(nn.Module):
             for stage, sig in enumerate(signal.chunk(N, dim=1)):
                 single_output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
                 single_output.append(single_output)
+            print("DEBUG:",E,len(single_output))
             outputs = torch.cat([outputs,single_output])
         return outputs
         
