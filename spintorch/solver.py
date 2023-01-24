@@ -59,14 +59,14 @@ class MMSolver(nn.Module):
         
         E = int(np.sqrt(signal.size()[0])) # size of each epoch 
         N = int(np.sqrt(signal.size()[1])) # number of stages 
-        outputs = torch.tensor([]).to(dev)
+        outputs = []
         for epoch in range(E):
             single_output = []
             for stage, sig in enumerate(signal.chunk(N, dim=1)):
                 single_output, m = checkpoint(self.run_stage, m, B_ext, Msat, sig)
                 single_output.append(single_output)
             print("DEBUG:",E,len(single_output))
-            outputs = torch.cat([outputs,single_output])
+            outputs.append(single_output)
         return outputs
         
     def run_stage(self, m, B_ext, Msat, signal):
