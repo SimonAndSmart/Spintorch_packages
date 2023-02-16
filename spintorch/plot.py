@@ -30,7 +30,7 @@ def plot_output(u, p, epoch, plotdir):
     plt.xlabel("output number")
     plt.ylabel("output")
     plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
-    fig.savefig(plotdir+'output_epoch%d_X%d.png' % (epoch, p))
+    fig.savefig(plotdir+'output_epoch%d_X%s.png' % (epoch, p)) #original is(if error, just switch back): fig.savefig(plotdir+'output_epoch%d_X%d.png' % (epoch, p))
     plt.close(fig)
 
 
