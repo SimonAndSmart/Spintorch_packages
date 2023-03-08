@@ -19,7 +19,7 @@ class MMSolver(nn.Module):
     gamma_LL = 1.7595e11    # gyromagnetic ratio (rad/Ts)
     relax_timesteps = 100
     retain_history = False
-    def __init__(self, geometry, dt: float, sources=[], probes=[]):
+    def __init__(self, geometry, dt: float, sources=[], probes=[],damping_width=10): # changes here! -Sinan
         super().__init__()
 
         self.register_buffer("dt", tensor(dt))               # timestep (s)
@@ -29,7 +29,7 @@ class MMSolver(nn.Module):
         self.probes = nn.ModuleList(probes)
         self.demag_2D = Demag(self.geom.dim, self.geom.d)
         self.exch_2D = Exchange(self.geom.d)
-        self.Alpha = Damping(self.geom.dim)
+        self.Alpha = Damping(self.geom.dim,region_width=damping_width) # changes here! -Sinan
         self.torque_SOT = SOT(self.geom.dim)
         SOT.gamma_LL = self.gamma_LL
 
