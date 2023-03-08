@@ -2,14 +2,15 @@
 from torch import nn, ones
 from skimage.draw import rectangle_perimeter
 
-class Damping(nn.Module,region_width = 10): # changes here! -Sinan
+class Damping(nn.Module,region_width = 10): 
     alpha = 1e-4    # damping coefficient ()
     alpha_max = 0.5 # maximum damping used on boundaries and for relax ()
     #region_width = 10   # width of absorbing region (cells) 
     
-    def __init__(self, dim: tuple):
+    def __init__(self, dim: tuple,region_width = 10):# changes here! -Sinan
         super().__init__()
         self.dim = dim
+        self.region_width=region_width
         
         A = self.alpha*ones((1, 1,) + self.dim) # damping coefficient pointwise ()
         
