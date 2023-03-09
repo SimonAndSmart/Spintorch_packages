@@ -2,7 +2,7 @@
 from torch import nn, ones
 from skimage.draw import rectangle_perimeter
 
-class Damping(nn.Module,region_width = 10): 
+class Damping(nn.Module): 
     alpha = 1e-4    # damping coefficient ()
     alpha_max = 0.5 # maximum damping used on boundaries and for relax ()
     #region_width = 10   # width of absorbing region (cells) 
